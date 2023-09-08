@@ -7,7 +7,7 @@ const DailyAverage = require("./schema/dailyAverages");
 const app = express();
 const port = 3000;
 
-// Connect to the MongoDB database with the correct connection string
+
 mongoose
   .connect("mongodb://127.0.0.1:27017/greengine", {
     useNewUrlParser: true,
@@ -20,7 +20,7 @@ mongoose
     console.error("Error connecting to MongoDB:", error);
   });
 
-// Use the cors middleware to enable CORS for all routes
+
 app.use(cors());
 
 app.use(express.json());
@@ -40,18 +40,16 @@ app.post("/store-phvalue", async (req, res) => {
   }
 });
 
-// Retrieve pH values for a specific plant and date
+
 app.get("/get-phvalues-perhour/:plant/:date", async (req, res) => {
   try {
     const { plant, date } = req.params;
 
-    // Query your MongoDB database to retrieve pH values
+    
     const pHValues = await PhValue.find({ plant, date });
 
-    // Debugging: Log the pH values
     console.log("pHValues:", pHValues);
 
-    // Send the pH values as a JSON response
     res.json(pHValues);
   } catch (error) {
     console.error(error);
@@ -59,7 +57,7 @@ app.get("/get-phvalues-perhour/:plant/:date", async (req, res) => {
   }
 });
 
-// Calculate and store daily average pH values
+
 app.post("/calculate-daily-average/:plant/:date", async (req, res) => {
   try {
     const { plant, date } = req.params;
@@ -82,7 +80,7 @@ app.post("/calculate-daily-average/:plant/:date", async (req, res) => {
     const averagePhValue =
       phValues.length > 0 ? totalPhValue / phValues.length : 0;
 
-    // Store the daily average pH value in the DailyAverage collection
+   
     await DailyAverage.create({ plant, date: dateObject, averagePhValue });
 
     res.status(201).json({
